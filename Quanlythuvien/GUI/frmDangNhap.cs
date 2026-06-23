@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
-using QuanLyThuVien.BLL;
+using QuanLyThuVien.DAL;
 
 namespace Quanlythuvien.GUI
 {
     public partial class frmDangNhap : Form
     {
-        private NhanVienBLL bll = new NhanVienBLL();
+        private NhanVienDAL dalNhanVien = new NhanVienDAL();
 
         public frmDangNhap()
         {
@@ -23,7 +23,7 @@ namespace Quanlythuvien.GUI
         }
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
-            string ketQua = bll.DangNhap(txtTaiKhoan.Text, txtMatKhau.Text);
+            string ketQua = DangNhap(txtTaiKhoan.Text, txtMatKhau.Text);
 
             if (ketQua == "Quản lý" || ketQua == "Nhân viên")
             {
@@ -38,9 +38,29 @@ namespace Quanlythuvien.GUI
             }
         }
 
+
+        private string DangNhap(string tk, string mk)
+        {
+            if (string.IsNullOrWhiteSpace(tk) || string.IsNullOrWhiteSpace(mk))
+                return "Vui lòng nhập đủ thông tin!";
+
+            string quyen = dalNhanVien.KiemTraDangNhap(tk.Trim(), mk.Trim());
+            if (!string.IsNullOrEmpty(quyen))
+                return quyen;
+
+            return "Sai tài khoản hoặc mật khẩu!";
+        }
         private void txtMatKhau_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
     }
 }
+
+
+

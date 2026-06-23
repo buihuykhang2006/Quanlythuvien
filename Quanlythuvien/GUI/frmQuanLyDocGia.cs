@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using QuanLyThuVien.BLL;
-using QuanLyThuVien.DTO;
+using QuanLyThuVien.DAL;
+using QuanLyThuVien.Entity;
 using System.Data.SqlClient;
 namespace Quanlythuvien.GUI;
 
 public partial class frmQuanLyDocGia : Form
 {
-    DocGiaBLL dgBLL = new DocGiaBLL();
+    DocGiaDAL dgDAL = new DocGiaDAL();
 
     public frmQuanLyDocGia()
     {
@@ -23,7 +23,7 @@ public partial class frmQuanLyDocGia : Form
     {
         // Tắt chế độ tự sinh cột rác
         dgvDocGia.AutoGenerateColumns = false;
-        dgvDocGia.DataSource = dgBLL.LayDanhSach();
+        dgvDocGia.DataSource = dgDAL.LayDanhSach();
     }
 
     private void dgvDocGia_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -48,18 +48,19 @@ public partial class frmQuanLyDocGia : Form
     {
         try
         {
+            Cursor = Cursors.WaitCursor;
             if (string.IsNullOrWhiteSpace(txtMaDocGia.Text))
             {
                 MessageBox.Show("Mã độc giả không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            DocGiaDTO d = new DocGiaDTO();
+            DocGia d = new DocGia();
             d.MaDocGia = txtMaDocGia.Text.Trim();
             d.HoTen = txtHoTen.Text.Trim();
             d.SoDienThoai = txtSoDienThoai.Text.Trim();
             d.NgayDangKy = dtpNgayDangKy.Value;
 
-            if (dgBLL.Them(d))
+            if (dgDAL.Them(d))
             {
                 MessageBox.Show("Thêm thành công!");
                 LoadData();
@@ -72,28 +73,33 @@ public partial class frmQuanLyDocGia : Form
             else
                 MessageBox.Show("Lỗi Database: " + sqlex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-            catch (Exception ex)
-{
-                MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+        finally
+        {
+            Cursor = Cursors.Default;
+        }
+    }
 
     private void btnSua_Click(object sender, EventArgs e)
     {
         try
         {
+            Cursor = Cursors.WaitCursor;
             if (string.IsNullOrWhiteSpace(txtMaDocGia.Text))
             {
                 MessageBox.Show("Vui lòng chọn độc giả cần sửa từ danh sách!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            DocGiaDTO d = new DocGiaDTO();
+            DocGia d = new DocGia();
             d.MaDocGia = txtMaDocGia.Text.Trim();
             d.HoTen = txtHoTen.Text.Trim();
             d.SoDienThoai = txtSoDienThoai.Text.Trim();
             d.NgayDangKy = dtpNgayDangKy.Value;
 
-            if (dgBLL.Sua(d))
+            if (dgDAL.Sua(d))
             {
                 MessageBox.Show("Sửa thành công!");
                 LoadData();
@@ -102,6 +108,10 @@ public partial class frmQuanLyDocGia : Form
         catch (Exception ex)
         {
             MessageBox.Show("Lỗi khi sửa: " + ex.Message);
+        }
+        finally
+        {
+            Cursor = Cursors.Default;
         }
     }
 
@@ -112,7 +122,8 @@ public partial class frmQuanLyDocGia : Form
         {
             try
             {
-                if (dgBLL.Xoa(txtMaDocGia.Text.Trim()))
+                Cursor = Cursors.WaitCursor;
+                if (dgDAL.Xoa(txtMaDocGia.Text.Trim()))
                 {
                     MessageBox.Show("Xóa thành công!");
                     LoadData();
@@ -122,6 +133,10 @@ public partial class frmQuanLyDocGia : Form
             {
                 MessageBox.Show("Lỗi khi xóa: " + ex.Message);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
     }
 
@@ -129,6 +144,18 @@ public partial class frmQuanLyDocGia : Form
     {
         // Lấy từ khóa từ ô TextBox tìm kiếm (giả sử tên là txtTuKhoa)
         string tuKhoa = txtTuKhoa.Text.Trim();
-        dgvDocGia.DataSource = dgBLL.TimKiemDocGia(tuKhoa);
+        dgvDocGia.DataSource = dgDAL.TimKiem(tuKhoa);
+    }
+
+    private void txtMaDocGia_TextChanged(object sender, EventArgs e)
+    {
+
     }
 }
+
+
+
+
+
+
+

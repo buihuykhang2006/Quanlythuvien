@@ -280,6 +280,7 @@
             txtMaSach.Name = "txtMaSach";
             txtMaSach.Size = new Size(333, 27);
             txtMaSach.TabIndex = 6;
+            txtMaSach.TextChanged += txtMaSach_TextChanged;
             // 
             // label6
             // 

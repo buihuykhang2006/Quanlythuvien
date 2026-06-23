@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Data.SqlClient; // Bắt lỗi SQL
-using QuanLyThuVien.BLL;
-using QuanLyThuVien.DTO;
+using QuanLyThuVien.DAL;
+using QuanLyThuVien.Entity;
 
 namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với project của ông nếu cần
 {
     public partial class frmQuanLyTheLoai : Form
     {
-        TheLoaiBLL tlBLL = new TheLoaiBLL();
+        TheLoaiDAL tlDAL = new TheLoaiDAL();
 
         public frmQuanLyTheLoai()
         {
@@ -24,7 +24,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
         private void LoadData()
         {
             dgvTheLoai.AutoGenerateColumns = false; // Tắt tự sinh cột
-            dgvTheLoai.DataSource = tlBLL.LayDanhSach();
+            dgvTheLoai.DataSource = tlDAL.LayDanhSach();
 
             // Cập nhật cái nhãn Tổng số lượng
             lblTongSo.Text = "Tổng số loại: " + dgvTheLoai.Rows.Count.ToString();
@@ -46,17 +46,18 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
         {
             try
             {
+                Cursor = Cursors.WaitCursor;
                 if (string.IsNullOrWhiteSpace(txtMaTheLoai.Text))
                 {
                     MessageBox.Show("Mã thể loại không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                TheLoaiDTO tl = new TheLoaiDTO();
+                TheLoai tl = new TheLoai();
                 tl.MaTheLoai = txtMaTheLoai.Text.Trim();
                 tl.TenTheLoai = txtTenTheLoai.Text.Trim();
 
-                if (tlBLL.Them(tl))
+                if (tlDAL.Them(tl))
                 {
                     MessageBox.Show("Thêm thể loại thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -73,6 +74,10 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
             {
                 MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         // Nút Sửa
@@ -80,17 +85,18 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
         {
             try
             {
+                Cursor = Cursors.WaitCursor;
                 if (string.IsNullOrWhiteSpace(txtMaTheLoai.Text))
                 {
                     MessageBox.Show("Vui lòng chọn một thể loại từ danh sách để sửa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                TheLoaiDTO tl = new TheLoaiDTO();
+                TheLoai tl = new TheLoai();
                 tl.MaTheLoai = txtMaTheLoai.Text.Trim();
                 tl.TenTheLoai = txtTenTheLoai.Text.Trim();
 
-                if (tlBLL.Sua(tl))
+                if (tlDAL.Sua(tl))
                 {
                     MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -100,6 +106,10 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
             {
                 MessageBox.Show("Lỗi khi sửa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         // Nút Xóa
@@ -107,6 +117,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
         {
             try
             {
+                Cursor = Cursors.WaitCursor;
                 if (string.IsNullOrWhiteSpace(txtMaTheLoai.Text))
                 {
                     MessageBox.Show("Vui lòng chọn thể loại cần xóa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -116,7 +127,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
                 DialogResult dr = MessageBox.Show("Ông có chắc chắn muốn xóa thể loại này không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dr == DialogResult.Yes)
                 {
-                    if (tlBLL.Xoa(txtMaTheLoai.Text.Trim()))
+                    if (tlDAL.Xoa(txtMaTheLoai.Text.Trim()))
                     {
                         MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -140,11 +151,25 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với proj
             {
                 MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
         }
+
+        private void txtMaTheLoai_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
+
+
+
+
+

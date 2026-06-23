@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using QuanLyThuVien.DTO;
+using QuanLyThuVien.Entity;
 
 namespace QuanLyThuVien.DAL
 {
@@ -8,7 +8,7 @@ namespace QuanLyThuVien.DAL
     {
         public DataTable LayDanhSach() => SqlHelper.ExecuteQuery("SELECT * FROM TheLoai");
 
-        public bool Them(TheLoaiDTO tl)
+        public bool Them(TheLoai tl)
         {
             string sql = "INSERT INTO TheLoai (MaTheLoai, TenTheLoai) VALUES (@ma, @ten)";
             SqlParameter[] p = {
@@ -18,7 +18,7 @@ namespace QuanLyThuVien.DAL
             return SqlHelper.ExecuteNonQuery(sql, p);
         }
 
-        public bool Sua(TheLoaiDTO tl)
+        public bool Sua(TheLoai tl)
         {
             string sql = "UPDATE TheLoai SET TenTheLoai = @ten WHERE MaTheLoai = @ma";
             SqlParameter[] p = {
@@ -36,3 +36,4 @@ namespace QuanLyThuVien.DAL
         }
     }
 }
+

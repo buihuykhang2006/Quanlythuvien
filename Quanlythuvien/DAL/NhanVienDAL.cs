@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using QuanLyThuVien.DTO;
+using QuanLyThuVien.Entity;
 
 namespace QuanLyThuVien.DAL
 {
@@ -29,7 +29,7 @@ namespace QuanLyThuVien.DAL
             return int.Parse(dt.Rows[0][0].ToString()) > 0;
         }
 
-        public bool DangKy(NhanVienDTO nv)
+        public bool DangKy(NhanVien nv)
         {
             string query = @"INSERT INTO NhanVien (MaNhanVien, HoTen, SoDienThoai, QuyenHan, TenDangNhap, MatKhau) 
                              VALUES (@ma, @ten, @sdt, @quyen, @tk, @mk)";
@@ -47,3 +47,4 @@ namespace QuanLyThuVien.DAL
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using QuanLyThuVien.DTO;
+﻿using QuanLyThuVien.Entity;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -7,7 +7,7 @@ namespace QuanLyThuVien.DAL
     public class DocGiaDAL
     {
         public DataTable LayDanhSach() => SqlHelper.ExecuteQuery("SELECT * FROM DocGia");
-        public bool Them(DocGiaDTO d)
+        public bool Them(DocGia d)
         {
             string sql = "INSERT INTO DocGia (MaDocGia, HoTen, SoDienThoai, NgayDangKy) VALUES (@ma, @ten, @sdt, @ngay)";
             SqlParameter[] p = {
@@ -19,7 +19,7 @@ namespace QuanLyThuVien.DAL
             return SqlHelper.ExecuteNonQuery(sql, p);
         }
 
-        public bool Sua(DocGiaDTO d)
+        public bool Sua(DocGia d)
         {
             string sql = "UPDATE DocGia SET HoTen = @ten, SoDienThoai = @sdt, NgayDangKy = @ngay WHERE MaDocGia = @ma";
             SqlParameter[] p = {
@@ -48,3 +48,5 @@ namespace QuanLyThuVien.DAL
         }
     }
 }
+
+

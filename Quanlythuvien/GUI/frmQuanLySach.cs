@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using QuanLyThuVien.BLL;
-using QuanLyThuVien.DTO;
+using QuanLyThuVien.DAL;
+using QuanLyThuVien.Entity;
 
-namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự án của ông
+namespace Quanlythuvien.GUI
 {
     public partial class frmQuanLySach : Form
     {
-        SachBLL sBLL = new SachBLL();
-        TheLoaiBLL tlBLL = new TheLoaiBLL(); // Gọi BLL Thể loại để nạp vào ComboBox
+        SachDAL sDAL = new SachDAL();
+        TheLoaiDAL tlDAL = new TheLoaiDAL();
 
         public frmQuanLySach()
         {
@@ -25,7 +25,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
         // Tuyệt chiêu nạp dữ liệu vào ComboBox
         private void LoadComboBox()
         {
-            cboMaTheLoai.DataSource = tlBLL.LayDanhSach();
+            cboMaTheLoai.DataSource = tlDAL.LayDanhSach();
             cboMaTheLoai.DisplayMember = "TenTheLoai"; // Chữ hiển thị cho người dùng xem
             cboMaTheLoai.ValueMember = "MaTheLoai";    // Giá trị thật (Mã) ẩn bên dưới để lưu vào DB
         }
@@ -33,7 +33,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
         private void LoadData()
         {
             dgvDanhSachSach.AutoGenerateColumns = false;
-            dgvDanhSachSach.DataSource = sBLL.LayDanhSach();
+            dgvDanhSachSach.DataSource = sDAL.LayDanhSach();
             lblTongSo.Text = "Tổng số sách: " + dgvDanhSachSach.Rows.Count.ToString();
         }
 
@@ -62,13 +62,14 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
         {
             try
             {
+                Cursor = Cursors.WaitCursor;
                 if (string.IsNullOrWhiteSpace(txtMaSach.Text))
                 {
                     MessageBox.Show("Mã sách không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                SachDTO s = new SachDTO();
+                Sach s = new Sach();
                 s.MaSach = txtMaSach.Text.Trim();
                 s.TenSach = txtTenSach.Text.Trim();
                 s.TacGia = txtTacGia.Text.Trim();
@@ -85,7 +86,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
                 // Nếu đã có giá trị thì mới an toàn lấy dữ liệu
                 s.MaTheLoai = cboMaTheLoai.SelectedValue.ToString();
 
-                if (sBLL.Them(s))
+                if (sDAL.Them(s))
                 {
                     MessageBox.Show("Thêm sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -102,19 +103,24 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
             {
                 MessageBox.Show("Lỗi hệ thống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         private void btnSua_Click(object sender, EventArgs e)
         {
             try
             {
+                Cursor = Cursors.WaitCursor;
                 if (string.IsNullOrWhiteSpace(txtMaSach.Text))
                 {
                     MessageBox.Show("Vui lòng chọn sách cần sửa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                SachDTO s = new SachDTO();
+                Sach s = new Sach();
                 s.MaSach = txtMaSach.Text.Trim();
                 s.TenSach = txtTenSach.Text.Trim();
                 s.TacGia = txtTacGia.Text.Trim();
@@ -122,7 +128,7 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
                 s.SoLuong = (int)nudSoLuong.Value;
                 s.MaTheLoai = cboMaTheLoai.SelectedValue.ToString();
 
-                if (sBLL.Sua(s))
+                if (sDAL.Sua(s))
                 {
                     MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -132,17 +138,22 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
             {
                 MessageBox.Show("Lỗi khi sửa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
         {
             try
             {
+                Cursor = Cursors.WaitCursor;
                 if (string.IsNullOrWhiteSpace(txtMaSach.Text)) return;
 
                 if (MessageBox.Show("Bạn có chắc muốn xóa cuốn sách này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
-                    if (sBLL.Xoa(txtMaSach.Text.Trim()))
+                    if (sDAL.Xoa(txtMaSach.Text.Trim()))
                     {
                         MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -172,6 +183,22 @@ namespace Quanlythuvien.GUI // Nhớ đổi tên namespace cho khớp với dự
             {
                 MessageBox.Show("Lỗi khi xóa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
+        private void txtMaSach_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
+
+
+
+
+
+
+

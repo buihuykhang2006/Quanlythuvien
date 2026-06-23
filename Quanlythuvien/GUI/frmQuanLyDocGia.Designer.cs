@@ -231,6 +231,7 @@
             txtMaDocGia.Name = "txtMaDocGia";
             txtMaDocGia.Size = new Size(125, 27);
             txtMaDocGia.TabIndex = 14;
+            txtMaDocGia.TextChanged += txtMaDocGia_TextChanged;
             // 
             // label4
             // 

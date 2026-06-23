@@ -92,6 +92,7 @@
             label1.Size = new Size(190, 46);
             label1.TabIndex = 1;
             label1.Text = "Đăng Nhập";
+            label1.Click += label1_Click;
             // 
             // frmDangNhap
             // 

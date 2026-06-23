@@ -115,6 +115,7 @@
             txtMaTheLoai.Name = "txtMaTheLoai";
             txtMaTheLoai.Size = new Size(218, 27);
             txtMaTheLoai.TabIndex = 3;
+            txtMaTheLoai.TextChanged += txtMaTheLoai_TextChanged;
             // 
             // btnXoa
             // 
