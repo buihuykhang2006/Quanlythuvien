@@ -1,10 +1,10 @@
-﻿using System.Data;
+using System.Data;
 using System.Data.SqlClient;
 using QuanLyThuVien.Entity;
 
 namespace QuanLyThuVien.DAL
 {
-    public class SachDAL
+    public class SachDAL : ISachDAL
     {
         public DataTable LayDanhSach() => SqlHelper.ExecuteQuery("SELECT * FROM Sach");
 
@@ -44,4 +44,3 @@ namespace QuanLyThuVien.DAL
         }
     }
 }
-

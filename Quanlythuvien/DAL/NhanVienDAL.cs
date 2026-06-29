@@ -1,10 +1,10 @@
-﻿using System.Data;
+using System.Data;
 using System.Data.SqlClient;
 using QuanLyThuVien.Entity;
 
 namespace QuanLyThuVien.DAL
 {
-    public class NhanVienDAL
+    public class NhanVienDAL : INhanVienDAL
     {
         public string KiemTraDangNhap(string taiKhoan, string matKhau)
         {
@@ -25,7 +25,6 @@ namespace QuanLyThuVien.DAL
             SqlParameter[] p = { new SqlParameter("@tk", tenDangNhap) };
 
             DataTable dt = SqlHelper.ExecuteQuery(query, p);
-            // Kiểm tra nếu số lượng trả về > 0 thì tài khoản đã tồn tại
             return int.Parse(dt.Rows[0][0].ToString()) > 0;
         }
 
@@ -47,4 +46,3 @@ namespace QuanLyThuVien.DAL
         }
     }
 }
-
